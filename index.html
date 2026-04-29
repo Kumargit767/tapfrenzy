@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#07070f">
+  <title>Tap Frenzy+ | Free Online Reaction Speed Game</title>
+  <meta name="description" content="Tap Frenzy+ is a free browser-based reaction speed game. Hit targets, build combos, level up, and beat your daily score. Play on mobile or desktop — no download needed.">
+  <meta name="keywords" content="tap game, reaction game, free online game, speed game, arcade game, browser game, mobile game">
+  <meta property="og:title" content="Tap Frenzy+ | Free Reaction Speed Game">
+  <meta property="og:description" content="Hit targets fast, build combos, collect power-ups. Free to play in your browser. No download needed.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kumargit767.github.io/tapfrenzy/">
+  <link rel="canonical" href="https://kumargit767.github.io/tapfrenzy/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3098959460651041" crossorigin="anonymous"></script>
+  <style>
+    :root{
+      --bg:#07070f;--surface:#0e0e1c;--card:#13132a;--border:rgba(255,255,255,0.07);
+      --accent:#7c3aed;--accent2:#06b6d4;--gold:#f59e0b;--green:#10b981;--red:#ef4444;--orange:#f97316;
+      --text:#fff;--text2:rgba(255,255,255,0.55);--text3:rgba(255,255,255,0.28);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+    ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--surface);}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
+
+    /* ── HEADER ── */
+    header{position:sticky;top:0;z-index:100;background:rgba(7,7,15,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
+    .header-logo{font-family:'Orbitron',monospace;font-size:16px;font-weight:900;background:linear-gradient(135deg,#fff,var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    nav{display:flex;gap:4px;flex-wrap:wrap;}
+    nav a{color:var(--text2);text-decoration:none;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;transition:color 0.2s;}
+    nav a:hover{color:var(--text);}
+
+    /* ── HERO ── */
+    .hero{padding:48px 20px 40px;text-align:center;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(124,58,237,0.15) 0%,transparent 70%);border-bottom:1px solid var(--border);}
+    .hero-title{font-family:'Orbitron',monospace;font-size:clamp(28px,8vw,52px);font-weight:900;background:linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;}
+    .hero-sub{font-size:clamp(14px,3.5vw,18px);font-weight:600;color:var(--text2);max-width:520px;margin:0 auto 24px;line-height:1.6;}
+    .hero-tags{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:28px;}
+    .hero-tag{font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;border:1px solid var(--border);color:var(--text3);background:var(--card);}
+
+    /* ── AD BANNER TOP ── */
+    .ad-banner{width:100%;max-width:728px;margin:0 auto;padding:12px 20px;text-align:center;}
+    .ad-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+
+    /* ── GAME SECTION ── */
+    #game-section{padding:20px;display:flex;flex-direction:column;align-items:center;gap:16px;}
+    #app{
+      position:relative;width:100%;max-width:480px;height:min(85vh,700px);
+      display:flex;flex-direction:column;overflow:hidden;
+      background:var(--bg);border-radius:20px;border:1px solid var(--border);
+      box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(124,58,237,0.1);
+    }
+
+    /* ── SCREENS ── */
+    .screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity 0.3s ease,transform 0.3s ease;transform:translateY(12px);overflow:hidden;}
+    .screen.active{opacity:1;pointer-events:all;transform:translateY(0);}
+    .screen.slide-out{opacity:0;transform:translateY(-12px);pointer-events:none;}
+    .bg-mesh{position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 20% 20%,rgba(124,58,237,0.12) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 80% 80%,rgba(6,182,212,0.10) 0%,transparent 70%);}
+    #canvas-bg{position:absolute;inset:0;z-index:0;opacity:0.4;}
+
+    /* ── HOME ── */
+    #home-screen{align-items:center;}
+    .home-content{position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;padding:16px;gap:10px;overflow-y:auto;flex:1;}
+    .logo-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;}
+    .logo-title{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(22px,6vw,34px);letter-spacing:2px;background:linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .logo-sub{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:3px;}
+
+    /* RESPECT */
+    .respect-card{width:100%;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px;position:relative;overflow:hidden;}
+    .respect-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,58,237,0.06),rgba(6,182,212,0.03));pointer-events:none;}
+    .rc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+    .rc-label{font-size:12px;font-weight:800;}
+    .rc-count{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;}
+    .rc-bar-track{width:100%;height:7px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden;margin-bottom:6px;}
+    .rc-bar-fill{height:7px;border-radius:99px;transition:width 0.8s cubic-bezier(0.34,1.56,0.64,1);}
+    .rc-msg{font-size:10px;font-weight:600;color:var(--text3);text-align:center;}
+
+    /* TARGET */
+    .target-card{width:100%;background:var(--card);border:1px solid rgba(245,158,11,0.2);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
+    .tc-icon{width:40px;height:40px;border-radius:10px;background:rgba(245,158,11,0.12);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+    .tc-info{flex:1;min-width:0;}
+    .tc-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
+    .tc-val{font-family:'Orbitron',monospace;font-size:20px;font-weight:900;color:var(--gold);line-height:1.1;}
+    .tc-sub{font-size:9px;font-weight:600;color:var(--text3);}
+    .tc-badge{font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;background:rgba(16,185,129,0.15);color:var(--green);border:1px solid rgba(16,185,129,0.3);white-space:nowrap;}
+
+    /* TIME GRID */
+    .section-label{font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:2px;align-self:flex-start;}
+    .time-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%;}
+    .time-btn{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:9px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;touch-action:manipulation;transition:all 0.15s;}
+    .time-btn:active{transform:scale(0.93);}
+    .time-btn.sel{background:var(--accent);border-color:var(--accent);box-shadow:0 0 16px rgba(124,58,237,0.4);}
+    .time-btn .tb-val{font-family:'Orbitron',monospace;font-size:clamp(10px,3vw,13px);font-weight:700;color:var(--text);}
+    .time-btn .tb-dot{width:5px;height:5px;border-radius:50%;background:var(--green);display:none;}
+    .time-btn.has-score .tb-dot{display:block;}
+
+    /* AUDIO */
+    .audio-row{display:flex;gap:6px;width:100%;align-items:center;}
+    .audio-btn{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:11px;font-weight:700;color:var(--text2);cursor:pointer;touch-action:manipulation;display:flex;align-items:center;gap:5px;flex:1;justify-content:center;transition:all 0.15s;}
+    .audio-btn.active{border-color:var(--accent);color:var(--text);background:rgba(124,58,237,0.12);}
+    .audio-btn .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);transition:background 0.2s;}
+    .audio-btn:not(.active) .dot{background:var(--text3);}
+    .vol-wrap{display:flex;align-items:center;gap:6px;flex:1;}
+    .vol-label{font-size:10px;font-weight:700;color:var(--text3);white-space:nowrap;}
+    input[type=range]{flex:1;accent-color:var(--accent);cursor:pointer;}
+
+    /* PLAY BUTTON */
+    .play-btn{width:100%;padding:16px;border-radius:18px;border:none;font-family:'Orbitron',monospace;font-size:clamp(15px,4vw,18px);font-weight:900;letter-spacing:3px;cursor:pointer;touch-action:manipulation;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;position:relative;overflow:hidden;box-shadow:0 6px 24px rgba(124,58,237,0.35),0 0 0 1px rgba(255,255,255,0.08) inset;transition:transform 0.12s,box-shadow 0.12s;}
+    .play-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.12),transparent);}
+    .play-btn:active{transform:scale(0.97);}
+    .play-btn-pulse{position:absolute;inset:0;border-radius:18px;animation:btnPulse 2s ease-in-out infinite;}
+    @keyframes btnPulse{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,0.4)}50%{box-shadow:0 0 0 10px rgba(124,58,237,0)}}
+
+    /* SCOREBOARD */
+    .sb-card{width:100%;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+    .sb-header{padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+    .sb-title{font-size:12px;font-weight:800;}
+    .sb-reset{font-size:9px;font-weight:600;color:var(--text3);}
+    .sb-tabs{display:flex;gap:3px;padding:6px 8px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+    .sb-tab{padding:3px 8px;border-radius:16px;font-size:10px;font-weight:700;cursor:pointer;touch-action:manipulation;color:var(--text3);background:transparent;border:1px solid transparent;transition:all 0.15s;}
+    .sb-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .sb-body{padding:0 0 3px;}
+    .sb-row{display:flex;align-items:center;padding:6px 14px;border-bottom:0.5px solid var(--border);}
+    .sb-row:last-child{border-bottom:none;}
+    .sb-rank{width:18px;font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--text3);}
+    .sb-day{flex:1;font-size:11px;font-weight:700;color:var(--text2);}
+    .sb-day.today{color:var(--accent2);}
+    .sb-score{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;}
+    .sb-score.hit{color:var(--green);}
+    .sb-score.empty{color:var(--text3);font-size:10px;font-family:'Nunito',sans-serif;}
+
+    /* HUD */
+    #game-hud{display:grid;grid-template-columns:repeat(4,1fr);padding:10px 12px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;position:relative;z-index:10;}
+    .hud-cell{display:flex;flex-direction:column;align-items:center;gap:1px;}
+    .hud-lbl{font-size:9px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
+    .hud-val{font-family:'Orbitron',monospace;font-size:clamp(16px,5vw,22px);font-weight:900;line-height:1;}
+    #xp-bar-wrap{height:3px;background:rgba(255,255,255,0.06);flex-shrink:0;}
+    #xp-bar{height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width 0.3s;}
+
+    /* ARENA */
+    #arena{flex:1;min-height:0;position:relative;overflow:hidden;touch-action:none;background:radial-gradient(ellipse at center,#0d0d20 0%,#07070f 100%);}
+    #arena-canvas{position:absolute;inset:0;pointer-events:none;}
+    #combo-display{position:absolute;top:8px;left:50%;transform:translateX(-50%);font-family:'Orbitron',monospace;font-size:clamp(26px,8vw,44px);font-weight:900;opacity:0;pointer-events:none;transition:opacity 0.2s;text-shadow:0 0 20px currentColor;z-index:5;}
+    #combo-display.show{opacity:1;}
+    .tgt{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;cursor:pointer;touch-action:manipulation;transition:transform 0.08s;will-change:transform;}
+    .tgt:active{transform:scale(0.85)!important;}
+    .tgt.gone{transform:scale(0)!important;opacity:0!important;transition:transform 0.1s,opacity 0.1s;}
+    .pwup{position:absolute;border-radius:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;border:2px solid rgba(255,255,255,0.3);animation:pwupPulse 0.8s ease-in-out infinite alternate;box-shadow:0 0 20px rgba(0,0,0,0.5);}
+    @keyframes pwupPulse{from{transform:scale(1)}to{transform:scale(1.08)}}
+    .floaty{position:absolute;pointer-events:none;font-family:'Orbitron',monospace;font-weight:900;animation:floatUp 0.7s ease-out forwards;text-shadow:0 0 10px currentColor;}
+    @keyframes floatUp{0%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}100%{opacity:0;transform:translateX(-50%) translateY(-55px) scale(0.8)}}
+    .badge-pop{position:absolute;left:50%;top:35%;transform:translate(-50%,-50%);font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(13px,4vw,18px);color:#fff;pointer-events:none;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);padding:8px 18px;border-radius:18px;white-space:nowrap;border:1px solid rgba(255,255,255,0.1);animation:badgePop 0.9s ease-out forwards;}
+    @keyframes badgePop{0%{opacity:0;transform:translate(-50%,-50%) scale(0.6)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}80%{opacity:1;transform:translate(-50%,-75px) scale(1)}100%{opacity:0;transform:translate(-50%,-95px) scale(0.9)}}
+    #miss-flash{position:absolute;inset:0;background:rgba(239,68,68,0.2);opacity:0;pointer-events:none;transition:opacity 0.08s;}
+    #freeze-ov{position:absolute;inset:0;background:rgba(6,182,212,0.1);opacity:0;pointer-events:none;transition:opacity 0.3s;}
+    #double-ov{position:absolute;inset:0;background:rgba(245,158,11,0.07);opacity:0;pointer-events:none;transition:opacity 0.3s;}
+    #urgent-bar{position:absolute;top:0;left:0;right:0;height:3px;background:var(--red);z-index:15;display:none;animation:urgBlink 0.5s ease-in-out infinite alternate;}
+    @keyframes urgBlink{from{opacity:1}to{opacity:0.2}}
+    #pre-game-countdown{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:rgba(7,7,15,0.85);backdrop-filter:blur(4px);}
+    .pgc-num{font-family:'Orbitron',monospace;font-size:clamp(70px,22vw,110px);font-weight:900;animation:pgcAnim 0.85s ease-out forwards;background:linear-gradient(135deg,#fff,var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    @keyframes pgcAnim{0%{transform:scale(1.4);opacity:0}20%{opacity:1;transform:scale(1)}80%{opacity:1;transform:scale(0.9)}100%{opacity:0;transform:scale(0.7)}}
+
+    /* GAME STATS BAR */
+    #game-stats-bar{display:none;justify-content:center;gap:14px;flex-wrap:wrap;padding:6px 14px;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;}
+    .gs-chip{font-size:10px;font-weight:700;color:var(--text3);}
+    .gs-chip span{color:var(--text);font-weight:800;}
+
+    /* RESULTS */
+    #results-screen{overflow:hidden;}
+    #results-screen .bg-mesh{opacity:0.6;}
+    .results-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative;z-index:1;padding:20px 16px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+    .result-title{font-family:'Orbitron',monospace;font-size:clamp(16px,5vw,22px);font-weight:900;text-align:center;}
+    .result-score{font-family:'Orbitron',monospace;font-size:clamp(46px,14vw,70px);font-weight:900;line-height:1;text-align:center;background:linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .result-mode{font-size:11px;font-weight:700;color:var(--text3);text-align:center;letter-spacing:1px;}
+    .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;width:100%;}
+    .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;}
+    .stat-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
+    .stat-val{font-family:'Orbitron',monospace;font-size:clamp(14px,4vw,20px);font-weight:900;}
+    .motiv-card{width:100%;background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(6,182,212,0.08));border:1px solid rgba(124,58,237,0.22);border-radius:12px;padding:12px 14px;text-align:center;font-size:12px;font-weight:700;line-height:1.5;}
+    .target-result{width:100%;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+    .tr-left{display:flex;flex-direction:column;gap:2px;}
+    .tr-lbl{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
+    .tr-val{font-family:'Orbitron',monospace;font-size:16px;font-weight:900;color:var(--gold);}
+    .tr-badge{padding:5px 10px;border-radius:16px;font-size:11px;font-weight:800;}
+    .tr-badge.win{background:rgba(16,185,129,0.15);color:var(--green);border:1px solid rgba(16,185,129,0.3);}
+    .tr-badge.fail{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.2);}
+    .play-again-btn{width:100%;padding:14px;border-radius:16px;border:none;font-family:'Orbitron',monospace;font-size:clamp(14px,4vw,17px);font-weight:900;letter-spacing:2px;cursor:pointer;touch-action:manipulation;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 6px 20px rgba(124,58,237,0.3);transition:transform 0.12s;}
+    .play-again-btn:active{transform:scale(0.97);}
+    .home-btn{width:100%;padding:11px;border-radius:14px;border:1px solid var(--border);background:transparent;color:var(--text2);font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;cursor:pointer;touch-action:manipulation;}
+
+    /* CONFETTI */
+    #confetti-layer{position:fixed;inset:0;z-index:99999;pointer-events:none;overflow:hidden;display:none;}
+    #confetti-layer.show{display:block;}
+    .cf{position:absolute;width:8px;height:8px;border-radius:1px;animation:cfFall linear both;}
+    @keyframes cfFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(800deg);opacity:0}}
+    #celeb-banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);z-index:100000;background:var(--card);border:1px solid rgba(124,58,237,0.4);border-radius:22px;padding:18px 24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.6);pointer-events:none;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s;opacity:0;max-width:280px;width:90%;}
+    #celeb-banner.show{transform:translate(-50%,-50%) scale(1);opacity:1;}
+    .cb-emoji{font-size:36px;display:block;margin-bottom:6px;}
+    .cb-title{font-family:'Orbitron',monospace;font-size:clamp(14px,4vw,18px);font-weight:900;margin-bottom:4px;}
+    .cb-msg{font-size:12px;font-weight:600;color:var(--text2);line-height:1.4;}
+
+    /* ── PAGE SECTIONS ── */
+    .page-section{max-width:800px;margin:0 auto;padding:48px 20px;}
+    .section-title{font-family:'Orbitron',monospace;font-size:clamp(18px,5vw,26px);font-weight:900;margin-bottom:8px;background:linear-gradient(135deg,#fff,var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .section-desc{font-size:14px;font-weight:600;color:var(--text2);line-height:1.7;margin-bottom:20px;}
+    .feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:16px;}
+    .feature-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px;}
+    .feature-icon{font-size:24px;}
+    .feature-title{font-size:14px;font-weight:800;}
+    .feature-desc{font-size:12px;font-weight:600;color:var(--text2);line-height:1.6;}
+    .how-steps{display:flex;flex-direction:column;gap:12px;margin-top:16px;}
+    .how-step{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;}
+    .step-num{font-family:'Orbitron',monospace;font-size:18px;font-weight:900;color:var(--accent);flex-shrink:0;width:32px;}
+    .step-text{font-size:13px;font-weight:600;color:var(--text2);line-height:1.6;}
+    .step-text strong{color:var(--text);}
+    .divider-section{border:none;border-top:1px solid var(--border);margin:0;}
+
+    /* FOOTER */
+    footer{background:var(--surface);border-top:1px solid var(--border);padding:28px 20px;text-align:center;}
+    .footer-links{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;}
+    .footer-links a{color:var(--text2);text-decoration:none;font-size:13px;font-weight:700;transition:color 0.2s;}
+    .footer-links a:hover{color:var(--text);}
+    .footer-copy{font-size:11px;color:var(--text3);}
+
+    /* MODAL */
+    .modal-backdrop{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.8);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;}
+    .modal-backdrop.show{display:flex;}
+    .modal-box{background:var(--card);border:1px solid var(--border);border-radius:20px;max-width:600px;width:100%;max-height:80vh;overflow-y:auto;padding:24px;}
+    .modal-title{font-family:'Orbitron',monospace;font-size:18px;font-weight:900;margin-bottom:16px;}
+    .modal-body p{font-size:13px;font-weight:600;color:var(--text2);line-height:1.8;margin-bottom:12px;}
+    .modal-body h3{font-size:14px;font-weight:800;color:var(--text);margin:16px 0 6px;}
+    .modal-close{width:100%;padding:12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text2);font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-top:16px;}
+
+    /* COOKIE BANNER */
+    #cookie-banner{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:var(--card);border-top:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+    #cookie-banner.hidden{display:none;}
+    .cookie-text{flex:1;min-width:200px;font-size:12px;font-weight:600;color:var(--text2);line-height:1.5;}
+    .cookie-accept{padding:9px 20px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-size:13px;font-weight:700;cursor:pointer;}
+
+    /* AD SIDE */
+    .ad-sidebar-wrap{display:flex;gap:16px;justify-content:center;align-items:flex-start;}
+    .ad-side{width:160px;flex-shrink:0;display:none;}
+    @media(min-width:760px){.ad-side{display:block;}}
+    .flex-1{flex:1;}
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar{width:4px;height:4px;}
+    ::-webkit-scrollbar-track{background:var(--surface);}
+    ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
+    *{scrollbar-width:thin;scrollbar-color:var(--accent) var(--surface);}
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="header-logo">TAP FRENZY+</div>
+  <nav>
+    <a href="#game-section">Play</a>
+    <a href="#features">Features</a>
+    <a href="#how-to-play">How to Play</a>
+    <a href="#about">About</a>
+  </nav>
+</header>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <h1 class="hero-title">TAP FRENZY+</h1>
+  <p class="hero-sub">The ultimate free browser reaction game. Tap targets, build insane combos, collect power-ups, and climb your personal leaderboard — no download, no sign-up needed.</p>
+  <div class="hero-tags">
+    <span class="hero-tag">Free to Play</span>
+    <span class="hero-tag">No Download</span>
+    <span class="hero-tag">Mobile Friendly</span>
+    <span class="hero-tag">Daily Challenges</span>
+    <span class="hero-tag">Combo System</span>
+    <span class="hero-tag">Power-Ups</span>
+  </div>
+  <a href="#game-section" style="display:inline-block;padding:14px 36px;border-radius:50px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:'Orbitron',monospace;font-size:16px;font-weight:900;text-decoration:none;box-shadow:0 8px 24px rgba(124,58,237,0.4);">Play Free Now</a>
+</section>
+
+<!-- ── TOP AD ── -->
+<div class="ad-banner">
+  <div class="ad-label">Advertisement</div>
+  <ins class="adsbygoogle" style="display:block;width:100%;height:90px;" data-ad-client="ca-pub-3098959460651041" data-ad-slot="auto" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+
+<!-- ── GAME ── -->
+<section id="game-section">
+  <div class="ad-sidebar-wrap">
+    <!-- Left ad -->
+    <div class="ad-side">
+      <div class="ad-label" style="font-size:9px;color:var(--text3);text-align:center;margin-bottom:4px;">Ad</div>
+      <ins class="adsbygoogle" style="display:block;width:160px;height:600px;" data-ad-client="ca-pub-3098959460651041" data-ad-slot="auto" data-ad-format="vertical"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- GAME APP -->
+    <div class="flex-1" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+      <div id="app">
+        <!-- HOME SCREEN -->
+        <div id="home-screen" class="screen active">
+          <div class="bg-mesh"></div>
+          <canvas id="canvas-bg"></canvas>
+          <div class="home-content" id="home-content"></div>
+        </div>
+        <!-- GAME SCREEN -->
+        <div id="game-screen" class="screen">
+          <div id="urgent-bar"></div>
+          <div id="game-hud">
+            <div class="hud-cell"><div class="hud-lbl">Score</div><div class="hud-val" id="h-score">0</div></div>
+            <div class="hud-cell"><div class="hud-lbl">Combo</div><div class="hud-val" style="color:var(--accent2);" id="h-combo">x1</div></div>
+            <div class="hud-cell"><div class="hud-lbl">Level</div><div class="hud-val" id="h-level">1</div></div>
+            <div class="hud-cell"><div class="hud-lbl">Time</div><div class="hud-val" id="h-time">30</div></div>
+          </div>
+          <div id="xp-bar-wrap"><div id="xp-bar"></div></div>
+          <div id="arena">
+            <canvas id="arena-canvas"></canvas>
+            <div id="combo-display"></div>
+            <div id="miss-flash"></div>
+            <div id="freeze-ov"></div>
+            <div id="double-ov"></div>
+            <div id="pre-game-countdown" style="display:none;"></div>
+          </div>
+          <div id="game-stats-bar">
+            <div class="gs-chip">Hits <span id="st-hits">0</span></div>
+            <div class="gs-chip">Misses <span id="st-miss">0</span></div>
+            <div class="gs-chip">Accuracy <span id="st-acc">0%</span></div>
+            <div class="gs-chip">Best Combo <span id="st-bc">x1</span></div>
+          </div>
+        </div>
+        <!-- RESULTS SCREEN -->
+        <div id="results-screen" class="screen">
+          <div class="bg-mesh"></div>
+          <div class="results-scroll" id="results-content"></div>
+        </div>
+      </div>
+
+      <!-- Below-game ad -->
+      <div style="width:100%;max-width:480px;text-align:center;">
+        <div class="ad-label" style="font-size:9px;color:var(--text3);margin-bottom:3px;">Advertisement</div>
+        <ins class="adsbygoogle" style="display:block;width:100%;height:90px;" data-ad-client="ca-pub-3098959460651041" data-ad-slot="auto" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+    </div>
+
+    <!-- Right ad -->
+    <div class="ad-side">
+      <div class="ad-label" style="font-size:9px;color:var(--text3);text-align:center;margin-bottom:4px;">Ad</div>
+      <ins class="adsbygoogle" style="display:block;width:160px;height:600px;" data-ad-client="ca-pub-3098959460651041" data-ad-slot="auto" data-ad-format="vertical"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+  </div>
+</section>
+
+<hr class="divider-section">
+
+<!-- ── FEATURES ── -->
+<section id="features" class="page-section">
+  <h2 class="section-title">Game Features</h2>
+  <p class="section-desc">Tap Frenzy+ is packed with features designed to keep you engaged, challenged, and coming back every day. Every session is a new opportunity to beat your personal record.</p>
+  <div class="feature-grid">
+    <div class="feature-card"><div class="feature-icon">🎯</div><div class="feature-title">Daily Targets</div><div class="feature-desc">Yesterday's best score becomes today's target. Beat it to celebrate and set a new challenge for tomorrow. Every mode (15s, 30s, 1min etc.) has its own independent target.</div></div>
+    <div class="feature-card"><div class="feature-icon">🔥</div><div class="feature-title">Respect+ Streak</div><div class="feature-desc">Play every day to build your 30-day Respect+ streak. Watch your bar go from red to orange to legendary green. Missing a day resets it — so stay consistent!</div></div>
+    <div class="feature-card"><div class="feature-icon">⚡</div><div class="feature-title">Combo System</div><div class="feature-desc">Hit targets consecutively to build your combo multiplier — up to 16x! Each combo level plays a higher musical note. Reach x5, x10, and x16 for special milestone fanfares.</div></div>
+    <div class="feature-card"><div class="feature-icon">🎮</div><div class="feature-title">4 Power-Ups</div><div class="feature-desc">❄️ Freeze Time, ⚡ 2x Points, ☄️ Clear Field, and 💣 Bomb (a trap!). Power-ups appear randomly on the field — tap wisely to gain advantages or avoid punishment.</div></div>
+    <div class="feature-card"><div class="feature-icon">📅</div><div class="feature-title">Weekly Scoreboard</div><div class="feature-desc">Track your scores for every day of the current week, organized by game mode. The board resets every Sunday — can you dominate all 7 days?</div></div>
+    <div class="feature-card"><div class="feature-icon">🎵</div><div class="feature-title">Procedural Music</div><div class="feature-desc">All music and sound effects are generated in real-time using the Web Audio API — no audio files. The beat shifts to urgent mode when time runs low. Toggle music and SFX independently.</div></div>
+    <div class="feature-card"><div class="feature-icon">⏱️</div><div class="feature-title">11 Time Modes</div><div class="feature-desc">From a quick 15-second burst to a full 5-minute endurance challenge. Choose your preferred duration and compete in that category's scoreboard independently.</div></div>
+    <div class="feature-card"><div class="feature-icon">📈</div><div class="feature-title">Leveling System</div><div class="feature-desc">Earn XP with every hit and level up during your run. Higher levels mean targets appear faster and the game gets progressively more challenging — can you reach level 10?</div></div>
+  </div>
+</section>
+
+<hr class="divider-section">
+
+<!-- ── HOW TO PLAY ── -->
+<section id="how-to-play" class="page-section">
+  <h2 class="section-title">How to Play</h2>
+  <p class="section-desc">Tap Frenzy+ is easy to pick up but hard to master. Here's everything you need to know to start scoring high from your very first game.</p>
+  <div class="how-steps">
+    <div class="how-step"><div class="step-num">01</div><div class="step-text"><strong>Choose your duration.</strong> Select how long you want to play — from a quick 15-second sprint to a challenging 5-minute marathon. Each duration has its own daily target and weekly scoreboard.</div></div>
+    <div class="how-step"><div class="step-num">02</div><div class="step-text"><strong>Tap the targets.</strong> Colourful circular targets appear on screen with a shrinking ring showing how long they last. Tap them before the ring disappears or you'll miss — and lose your combo.</div></div>
+    <div class="how-step"><div class="step-num">03</div><div class="step-text"><strong>Build your combo.</strong> Every successful tap increases your combo multiplier. Your score per target multiplies by your current combo — so a x10 combo turns a 10-point target into 100 points!</div></div>
+    <div class="how-step"><div class="step-num">04</div><div class="step-text"><strong>Use power-ups wisely.</strong> Special power-up tiles appear randomly. ❄️ Freeze stops the clock for 4 seconds. ⚡ doubles all points for 5 seconds. ☄️ clears the screen for bonus points. 💣 is a trap — it resets your combo!</div></div>
+    <div class="how-step"><div class="step-num">05</div><div class="step-text"><strong>Beat your daily target.</strong> Yesterday's best score for this mode is your target today. Beat it to trigger a celebration, earn a new Respect+ streak day, and set a new target for tomorrow.</div></div>
+    <div class="how-step"><div class="step-num">06</div><div class="step-text"><strong>Build your Respect+ streak.</strong> Play at least once every day to maintain your streak. After 26 days your bar turns green — legendary status. Miss one day and it resets. Consistency is the real game.</div></div>
+  </div>
+</section>
+
+<hr class="divider-section">
+
+<!-- ── ABOUT ── -->
+<section id="about" class="page-section">
+  <h2 class="section-title">About Tap Frenzy+</h2>
+  <p class="section-desc">Tap Frenzy+ is a free, browser-based reaction speed game built with vanilla HTML, CSS, and JavaScript — no frameworks, no plugins, no downloads required. It runs entirely in your browser on any device.</p>
+  <p class="section-desc">The game was designed to be genuinely engaging with a loop that rewards daily play: a combo system that feels satisfying, a daily target that gives you a reason to come back, and a 30-day streak challenge that builds real habit. All music and sound effects are procedurally generated using the Web Audio API, meaning zero audio files are needed.</p>
+  <p class="section-desc">Tap Frenzy+ is free to play and supported by advertising via Google AdSense. No personal data is collected beyond what is stored locally in your browser (your scores and streak). Nothing is sent to any server.</p>
+  <div style="margin-top:16px;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:14px;">
+    <div style="font-size:13px;font-weight:800;margin-bottom:8px;">Contact</div>
+    <p style="font-size:12px;font-weight:600;color:var(--text2);line-height:1.7;">For questions, feedback, or bug reports, please visit our GitHub repository at <strong style="color:var(--text);">github.com/kumargit767/tapfrenzy</strong> and open an issue. We read every report.</p>
+  </div>
+</section>
+
+<hr class="divider-section">
+
+<!-- ── BOTTOM AD ── -->
+<div class="ad-banner" style="padding:16px 20px;">
+  <div class="ad-label">Advertisement</div>
+  <ins class="adsbygoogle" style="display:block;width:100%;height:90px;" data-ad-client="ca-pub-3098959460651041" data-ad-slot="auto" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-links">
+    <a href="#" onclick="showModal('privacy')">Privacy Policy</a>
+    <a href="#" onclick="showModal('terms')">Terms of Use</a>
+    <a href="#" onclick="showModal('cookies')">Cookie Policy</a>
+    <a href="#about">About</a>
+    <a href="#how-to-play">How to Play</a>
+    <a href="https://github.com/kumargit767/tapfrenzy" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <p class="footer-copy">&copy; 2025 Tap Frenzy+. All rights reserved. Free to play in any browser — no download required.</p>
+</footer>
+
+<!-- ── MODALS ── -->
+<div class="modal-backdrop" id="modal-privacy">
+  <div class="modal-box">
+    <div class="modal-title">Privacy Policy</div>
+    <div class="modal-body">
+      <p><strong>Effective date: January 1, 2025</strong></p>
+      <p>Tap Frenzy+ ("the game", "we", "our") is a free browser-based game available at kumargit767.github.io/tapfrenzy. This Privacy Policy explains how we handle information when you use our service.</p>
+      <h3>Information We Collect</h3>
+      <p>Tap Frenzy+ does not collect, transmit, or store any personal information on external servers. All game data — including your scores, daily streak, and preferences — is stored exclusively in your browser's localStorage and never leaves your device.</p>
+      <h3>Advertising</h3>
+      <p>This site uses Google AdSense to display advertisements. Google may use cookies and similar technologies to serve personalised ads based on your browsing activity across websites. Google's use of advertising cookies enables it and its partners to serve ads to you based on your visit to this site and/or other sites on the Internet. You can opt out of personalised advertising by visiting Google's Ads Settings at adssettings.google.com.</p>
+      <h3>Cookies</h3>
+      <p>We use browser localStorage (not cookies) to save your game state. Google AdSense may set cookies on your device for advertising purposes. Please see our Cookie Policy for more details.</p>
+      <h3>Third Party Services</h3>
+      <p>We use Google AdSense (advertising), Google Fonts (typography), and GitHub Pages (hosting). Each of these services has their own privacy policies.</p>
+      <h3>Children's Privacy</h3>
+      <p>Tap Frenzy+ does not knowingly collect information from children under 13. The game contains no mature content and is suitable for all ages.</p>
+      <h3>Changes to This Policy</h3>
+      <p>We may update this Privacy Policy from time to time. Updates will be reflected on this page with a new effective date.</p>
+      <h3>Contact</h3>
+      <p>For privacy-related questions, please open an issue at github.com/kumargit767/tapfrenzy.</p>
+    </div>
+    <button class="modal-close" onclick="closeModal('privacy')">Close</button>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-terms">
+  <div class="modal-box">
+    <div class="modal-title">Terms of Use</div>
+    <div class="modal-body">
+      <p><strong>Effective date: January 1, 2025</strong></p>
+      <p>By accessing and playing Tap Frenzy+, you accept and agree to be bound by the following Terms of Use.</p>
+      <h3>Use of the Game</h3>
+      <p>Tap Frenzy+ is provided free of charge for personal, non-commercial entertainment purposes. You may not attempt to exploit, reverse engineer, scrape, or interfere with the operation of this game or its hosting infrastructure.</p>
+      <h3>Intellectual Property</h3>
+      <p>All game design, code, graphics, sounds, and content are the property of the Tap Frenzy+ developer. The game code is available on GitHub under an open-source license — please refer to the repository for details.</p>
+      <h3>Advertising</h3>
+      <p>Tap Frenzy+ displays advertisements through Google AdSense to support free access to the game. By using the game, you agree to the display of these advertisements. Interacting with ads is voluntary.</p>
+      <h3>Disclaimer</h3>
+      <p>Tap Frenzy+ is provided "as is" without any warranties. We do not guarantee uninterrupted access, and we reserve the right to modify or discontinue the game at any time without notice.</p>
+      <h3>Governing Law</h3>
+      <p>These terms are governed by applicable law. Any disputes arising from the use of this game shall be resolved in accordance with the laws of the jurisdiction of the developer.</p>
+    </div>
+    <button class="modal-close" onclick="closeModal('terms')">Close</button>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-cookies">
+  <div class="modal-box">
+    <div class="modal-title">Cookie Policy</div>
+    <div class="modal-body">
+      <p><strong>Effective date: January 1, 2025</strong></p>
+      <h3>What Are Cookies</h3>
+      <p>Cookies are small text files stored on your device by websites you visit. They are widely used to make websites work efficiently and provide reporting information to site owners.</p>
+      <h3>How We Use Storage</h3>
+      <p>Tap Frenzy+ itself uses browser localStorage — not cookies — to save your game data (scores, streak, preferences) entirely on your own device. This data is never transmitted to any server.</p>
+      <h3>Third-Party Advertising Cookies</h3>
+      <p>Google AdSense, our advertising partner, may set one or more cookies on your device. These cookies help Google serve relevant advertisements and measure their effectiveness. Google's advertising cookies may track your activity across websites to personalise ads.</p>
+      <p>You can manage or disable advertising cookies by:</p>
+      <p>• Visiting Google's Ads Settings: adssettings.google.com<br>• Using your browser's privacy settings to block third-party cookies<br>• Installing browser extensions such as Privacy Badger or uBlock Origin<br>• Opting out via the Network Advertising Initiative at networkadvertising.org/choices</p>
+      <h3>Google Fonts</h3>
+      <p>We load fonts from Google Fonts. Google may collect basic usage data (IP address, referrer) when serving these fonts. See fonts.google.com/privacy for details.</p>
+      <h3>Your Choices</h3>
+      <p>By continuing to use Tap Frenzy+, you consent to the use of advertising cookies as described above. You can withdraw consent at any time by clearing your browser cookies and adjusting your browser settings.</p>
+    </div>
+    <button class="modal-close" onclick="closeModal('cookies')">Close</button>
+  </div>
+</div>
+
+<!-- ── COOKIE BANNER ── -->
+<div id="cookie-banner">
+  <div class="cookie-text">We use cookies from Google AdSense to show ads. Your game data is stored locally on your device. <a href="#" onclick="showModal('cookies')" style="color:var(--accent2);">Learn more</a></div>
+  <button class="cookie-accept" onclick="acceptCookies()">Accept & Play</button>
+</div>
+
+<!-- ── CONFETTI / CELEB ── -->
+<div id="confetti-layer"></div>
+<div id="celeb-banner">
+  <span class="cb-emoji" id="cb-emoji">🎉</span>
+  <div class="cb-title" id="cb-title">TARGET CRUSHED!</div>
+  <div class="cb-msg" id="cb-msg"></div>
+</div>
+
+<script>
+/* ══ MODAL ══ */
+function showModal(id){document.getElementById('modal-'+id).classList.add('show');}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('show');}
+document.querySelectorAll('.modal-backdrop').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('show');});});
+
+/* ══ COOKIE BANNER ══ */
+if(localStorage.getItem('tf_cookies')==='1')document.getElementById('cookie-banner').classList.add('hidden');
+function acceptCookies(){localStorage.setItem('tf_cookies','1');document.getElementById('cookie-banner').classList.add('hidden');}
+
+/* ══════════════════════════════════════════════
+   STORAGE
+══════════════════════════════════════════════ */
+var TIME_OPTIONS=[15,30,60,90,120,150,180,210,240,270,300];
+var SHAPES=['\u2605','\u25cf','\u25c6','\u25b2','\u2665','\u2726','\u2B22'];
+var COLORS=['#7c3aed','#06b6d4','#10b981','#f59e0b','#ef4444','#ec4899','#8b5cf6','#0ea5e9','#f97316'];
+
+function todayKey(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function weekStartTs(){var d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-d.getDay());return d.getTime();}
+function dayName(s){var p=s.split('-');var d=new Date(+p[0],+p[1]-1,+p[2]);return['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];}
+function daysUntilReset(){return 7-new Date().getDay();}
+function fmtTime(t){return t>=60?Math.floor(t/60)+'m'+(t%60?t%60+'s':''):t+'s';}
+function lsGet(k){try{var v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+function getWeekData(tSec){var k='tf_w3_'+tSec,data=lsGet(k)||{weekStart:0,days:{}};if(data.weekStart!==weekStartTs()){data={weekStart:weekStartTs(),days:{}};}return{key:k,data:data};}
+function saveScore(tSec,sc){var r=getWeekData(tSec),today=todayKey();if(!r.data.days[today]||sc>r.data.days[today])r.data.days[today]=sc;lsSet(r.key,r.data);}
+function getTodayBest(tSec){return getWeekData(tSec).data.days[todayKey()]||0;}
+function getTarget(tSec){var d=new Date();d.setDate(d.getDate()-1);var yk=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();return getWeekData(tSec).data.days[yk]||0;}
+function getStreak(){return lsGet('tf_st3')||{count:0,lastDate:''};}
+function updateStreak(){var today=todayKey(),s=getStreak();if(s.lastDate===today)return s;var y=new Date();y.setDate(y.getDate()-1);var yk=y.getFullYear()+'-'+(y.getMonth()+1)+'-'+y.getDate();s.count=(s.lastDate===yk)?Math.min(s.count+1,30):1;s.lastDate=today;lsSet('tf_st3',s);return s;}
+function respectColor(n){return n<=10?'#ef4444':n<=25?'#f97316':'#10b981';}
+function respectMsg(n){if(n===0)return'Play every day to build your streak!';if(n<=3)return'Just getting started \u2014 keep going!';if(n<=10)return'Building the habit \u2014 don\'t stop now!';if(n<=20)return'You\'re on a roll! Stay consistent!';if(n<=25)return'Almost golden \u2014 push through!';if(n<30)return'Elite level! One last push!';return'LEGENDARY! 30 days strong! \ud83d\udc51';}
+var MOT_WIN=['\ud83d\udd25 Target crushed! Keep raising the bar!','\u26a1 Yesterday you, BEATEN! Go again!','\ud83d\ude80 Unstoppable! The streak lives!','\ud83c\udfc6 Champion mindset! Push for more!','\ud83d\udcaa Elite performance! Keep this energy!'];
+var MOT_MISS=['\ud83d\udca1 So close! Tomorrow\'s target is now set.','\ud83c\udfae Good session! One more round!','\u26a1 The comeback starts NOW!','\ud83d\udd04 Every rep makes you sharper!'];
+function randMsg(a){return a[Math.floor(Math.random()*a.length)];}
+
+/* ══ STATE ══ */
+var chosenTime=30,sbViewTime=30;
+var actx=null,musicOn=true,sfxOn=true,masterVol=0.6;
+var bgNodes=[],bgGain=null,urgentNodes=[],urgentGain=null;
+var score=0,combo=1,bestCombo=1,timeLeft=30;
+var running=false,frozen=false,doublePoints=false,urgentStarted=false;
+var level=1,xp=0,xpNeeded=10,hitCount=0,missCount=0;
+var spawnTout,cdInt,targets=[],pwups=[],comboTimer=null;
+var arenaParticles=[];
+var currentScreen='home';
+
+/* ══ SCREEN NAV ══ */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(function(s){
+    if(s.id===id){s.classList.remove('slide-out');s.classList.add('active');}
+    else{s.classList.remove('active');s.classList.add('slide-out');setTimeout(function(){s.classList.remove('slide-out');},350);}
+  });
+  currentScreen=id.replace('-screen','');
+  if(id==='home-screen')initBgCanvas();
+}
+
+/* ══ BG CANVAS ══ */
+var bgParticles=[];
+function initBgCanvas(){var c=document.getElementById('canvas-bg');if(!c)return;c.width=c.offsetWidth;c.height=c.offsetHeight;bgParticles=[];for(var i=0;i<25;i++){bgParticles.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.5+0.5,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,a:Math.random()});}animateBg(c);}
+function animateBg(c){var ctx=c.getContext('2d');function frame(){ctx.clearRect(0,0,c.width,c.height);bgParticles.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.a+=0.005;if(p.x<0)p.x=c.width;if(p.x>c.width)p.x=0;if(p.y<0)p.y=c.height;if(p.y>c.height)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(124,58,237,'+(0.3+0.2*Math.sin(p.a))+')';ctx.fill();});if(document.getElementById('home-screen').classList.contains('active'))requestAnimationFrame(frame);}requestAnimationFrame(frame);}
+
+/* ══ ARENA PARTICLES ══ */
+function spawnHitParticles(x,y,color){for(var i=0;i<10;i++){var angle=Math.random()*Math.PI*2,speed=2+Math.random()*4;arenaParticles.push({x:x,y:y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,r:2+Math.random()*3,color:color,life:1,decay:0.04+Math.random()*0.04});}}
+function animateArena(){var c=document.getElementById('arena-canvas');if(!c)return;c.width=c.offsetWidth;c.height=c.offsetHeight;var ctx=c.getContext('2d');function frame(){ctx.clearRect(0,0,c.width,c.height);arenaParticles=arenaParticles.filter(function(p){return p.life>0;});arenaParticles.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=0.1;p.life-=p.decay;p.r*=0.97;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color.replace('rgb','rgba').replace(')',','+p.life+')');ctx.fill();});if(running)requestAnimationFrame(frame);}requestAnimationFrame(frame);}
+
+/* ══ VIBRATE ══ */
+function vibrate(ms){if(navigator&&navigator.vibrate)try{navigator.vibrate(ms||15);}catch(e){}}
+
+/* ══ AUDIO ══ */
+function getCtx(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume();return actx;}
+function playTone(f,type,dur,vol,dst,delay){delay=delay||0;var ctx=getCtx(),o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.value=f;o.connect(g);g.connect(dst||ctx.destination);var t=ctx.currentTime+delay;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol*masterVol,t+0.01);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);o.start(t);o.stop(t+dur+0.05);}
+function playHit(c){if(!sfxOn)return;var notes=[261,294,329,370,415,466,523,587,659,740,880,987,1047,1175,1319,1480],f=notes[Math.min(c-1,notes.length-1)];playTone(f,'sine',0.1,0.4);playTone(f*2,'sine',0.06,0.15,null,0.02);if(c>=5)playTone(f*1.5,'triangle',0.12,0.12,null,0.03);}
+function playMiss(){if(!sfxOn)return;playTone(150,'sawtooth',0.1,0.25);playTone(110,'sawtooth',0.15,0.2,null,0.06);}
+function playPowerup(id){if(!sfxOn)return;if(id==='freeze')[800,600,400,300].forEach(function(f,i){playTone(f,'sine',0.18,0.2,null,i*0.07);});if(id==='double')[300,500,700,900,1100].forEach(function(f,i){playTone(f,'square',0.1,0.15,null,i*0.05);});if(id==='clear')[200,400,600,800,1000,1200].forEach(function(f,i){playTone(f,'sine',0.2,0.18,null,i*0.04);});if(id==='bomb'){playTone(55,'sawtooth',0.5,0.5);[300,200,100].forEach(function(f,i){playTone(f,'sawtooth',0.1,0.2,null,(i+1)*0.07);});}}
+function playLevelUp(){if(!sfxOn)return;[523,659,784,1047,1319].forEach(function(f,i){playTone(f,'sine',0.22,0.3,null,i*0.09);});}
+function playGameOver(){if(!sfxOn)return;[523,415,330,262,196].forEach(function(f,i){playTone(f,'sine',0.4,0.3,null,i*0.12);});}
+function playNewBest(){if(!sfxOn)return;[523,659,784,880,1047,1175,1319].forEach(function(f,i){playTone(f,'sine',0.2,0.35,null,i*0.08);});}
+function playComboMilestone(l){if(!sfxOn)return;if(l===5)[261,329,392,523].forEach(function(f,i){playTone(f,'triangle',0.2,0.3,null,i*0.08);});if(l===10)[523,659,784,659,784,1047].forEach(function(f,i){playTone(f,'sine',0.2,0.3,null,i*0.07);});if(l===16)for(var i=0;i<10;i++)playTone(300+i*100,'square',0.15,0.25,null,i*0.05);}
+function playCelebration(){if(!sfxOn)return;[523,659,784,880,1047,880,784,659,784,1047,1319].forEach(function(f,i){playTone(f,'sine',0.25,0.4,null,i*0.07);});}
+function playCountdownBeep(n){if(!sfxOn)return;playTone(n===1?1200:800,'square',0.12,0.35);}
+
+function startBgMusic(){
+  if(!musicOn||!actx)return;stopBgMusic();
+  var ctx=actx,bpm=130,beat=60/bpm,bass=[55,55,73,55,65,55,73,73],now=ctx.currentTime;
+  bgGain=ctx.createGain();bgGain.gain.value=0.15*masterVol;bgGain.connect(ctx.destination);
+  function sBass(t){if(!running&&!bgGain)return;bass.forEach(function(f,i){var o=ctx.createOscillator(),g=ctx.createGain();o.type='sawtooth';o.frequency.value=f;o.connect(g);g.connect(bgGain);var st=t+i*beat*0.5;g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(0.6,st+0.02);g.gain.exponentialRampToValueAtTime(0.001,st+beat*0.4);o.start(st);o.stop(st+beat*0.5);});bgNodes.push(setTimeout(function(){sBass(ctx.currentTime);},bass.length*beat*0.5*1000-60));}
+  function sHat(t){if(!running&&!bgGain)return;for(var i=0;i<8;i++){var buf=ctx.createBuffer(1,Math.floor(ctx.sampleRate*0.04),ctx.sampleRate),d=buf.getChannelData(0);for(var j=0;j<d.length;j++)d[j]=(Math.random()*2-1)*Math.exp(-j/600);var src=ctx.createBufferSource(),g=ctx.createGain();src.buffer=buf;g.gain.value=0.3;src.connect(g);g.connect(bgGain);src.start(t+i*beat*0.25);}bgNodes.push(setTimeout(function(){sHat(ctx.currentTime);},8*beat*0.25*1000-60));}
+  function sKick(t){if(!running&&!bgGain)return;[0,1,2,3].forEach(function(i){var o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(160,t+i*beat);o.frequency.exponentialRampToValueAtTime(30,t+i*beat+0.15);o.connect(g);g.connect(bgGain);g.gain.setValueAtTime(1,t+i*beat);g.gain.exponentialRampToValueAtTime(0.001,t+i*beat+0.3);o.start(t+i*beat);o.stop(t+i*beat+0.35);});bgNodes.push(setTimeout(function(){sKick(ctx.currentTime);},4*beat*1000-60));}
+  sBass(now);sHat(now+beat*0.125);sKick(now);
+}
+function stopBgMusic(){bgNodes.forEach(function(t){clearTimeout(t);});bgNodes=[];if(bgGain){try{bgGain.disconnect();}catch(e){}bgGain=null;}}
+function startUrgentMusic(){if(!musicOn||!actx)return;stopBgMusic();urgentGain=actx.createGain();urgentGain.gain.value=0.2*masterVol;urgentGain.connect(actx.destination);var ctx=actx,bpm=175,beat=60/bpm,notes=[110,110,146,110,110,130,110,146];function sUrg(t){if(!running)return;notes.forEach(function(f,i){var o=ctx.createOscillator(),g=ctx.createGain();o.type='square';o.frequency.value=f;o.connect(g);g.connect(urgentGain);var st=t+i*beat*0.5;g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(0.5,st+0.01);g.gain.exponentialRampToValueAtTime(0.001,st+beat*0.4);o.start(st);o.stop(st+beat*0.5);});urgentNodes.push(setTimeout(function(){sUrg(ctx.currentTime);},notes.length*beat*0.5*1000-60));}sUrg(actx.currentTime);}
+function stopUrgentMusic(){urgentNodes.forEach(function(t){clearTimeout(t);});urgentNodes=[];if(urgentGain){try{urgentGain.disconnect();}catch(e){}urgentGain=null;}}
+function stopAllMusic(){stopBgMusic();stopUrgentMusic();}
+
+/* ══ CONFETTI ══ */
+function launchConfetti(){var layer=document.getElementById('confetti-layer');layer.innerHTML='';layer.classList.add('show');var colors=['#7c3aed','#06b6d4','#f59e0b','#10b981','#ef4444','#ec4899','#fff','#f97316'];for(var i=0;i<70;i++){var p=document.createElement('div');p.className='cf';p.style.left=Math.random()*100+'%';p.style.background=colors[Math.floor(Math.random()*colors.length)];p.style.width=(6+Math.random()*8)+'px';p.style.height=(6+Math.random()*8)+'px';p.style.borderRadius=Math.random()>0.5?'50%':'2px';p.style.animationDuration=(1.5+Math.random()*2)+'s';p.style.animationDelay=Math.random()*0.6+'s';layer.appendChild(p);}setTimeout(function(){layer.classList.remove('show');layer.innerHTML='';},3500);}
+function showCeleb(emoji,title,msg){var b=document.getElementById('celeb-banner');document.getElementById('cb-emoji').textContent=emoji;document.getElementById('cb-title').textContent=title;document.getElementById('cb-msg').textContent=msg;b.classList.add('show');setTimeout(function(){b.classList.remove('show');},3000);}
+
+/* ══ UI BUILDERS ══ */
+function buildRespectCard(){var s=getStreak(),n=s.count,pct=Math.round(n/30*100),c=respectColor(n);return'<div class="respect-card"><div class="rc-top"><span class="rc-label">Respect+ &#128293;</span><span class="rc-count" style="color:'+c+'">'+n+' / 30</span></div><div class="rc-bar-track"><div class="rc-bar-fill" style="width:'+pct+'%;background:'+c+';"></div></div><div class="rc-msg">'+respectMsg(n)+'</div></div>';}
+function buildTargetCard(tSec){var target=getTarget(tSec),today=getTodayBest(tSec),beaten=today>=target&&target>0;if(target===0)return'<div class="target-card"><div class="tc-icon">\ud83c\udfaf</div><div class="tc-info"><div class="tc-label">Target &middot; '+fmtTime(tSec)+'</div><div class="tc-val" style="color:var(--text3);">&mdash;</div><div class="tc-sub">Play today to set tomorrow\'s target</div></div></div>';return'<div class="target-card"><div class="tc-icon">\ud83c\udfaf</div><div class="tc-info"><div class="tc-label">Target &middot; '+fmtTime(tSec)+'</div><div class="tc-val">'+target.toLocaleString()+'</div><div class="tc-sub">Beat yesterday\'s '+fmtTime(tSec)+' best!</div></div>'+(beaten?'<div class="tc-badge">\u2713 Done!</div>':'')+'</div>';}
+function buildSbRows(tSec){var r=getWeekData(tSec),data=r.data,today=todayKey(),target=getTarget(tSec),d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-d.getDay());var html='';for(var i=0;i<7;i++){var k=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(),sc=data.days[k]||0,isToday=k===today,hit=sc>0&&target>0&&sc>=target;html+='<div class="sb-row"><span class="sb-rank">'+(i+1)+'</span><span class="sb-day'+(isToday?' today':'')+'">'+dayName(k)+(isToday?' \u2022':'')+'</span><span class="sb-score'+(sc>0?(hit?' hit':''):'empty')+'">'+(sc>0?sc.toLocaleString()+(hit?' \ud83c\udf89':''):'\u2014')+'</span></div>';d.setDate(d.getDate()+1);}return html;}
+function buildScoreboardCard(activeTSec){var tabs=TIME_OPTIONS.map(function(t){var b=getTodayBest(t)>0;return'<button class="sb-tab'+(t===activeTSec?' active':'')+'" data-t="'+t+'">'+fmtTime(t)+(b?' \u25cf':'')+'</button>';}).join('');return'<div class="sb-card"><div class="sb-header"><span class="sb-title">This Week</span><span class="sb-reset">Resets in '+daysUntilReset()+'d</span></div><div class="sb-tabs" id="sb-tabs">'+tabs+'</div><div class="sb-body"><div id="sb-rows">'+buildSbRows(activeTSec)+'</div></div></div>';}
+
+function buildHomeScreen(){
+  var todayBest=getTodayBest(chosenTime);
+  var timeButtons=TIME_OPTIONS.map(function(t){var best=getTodayBest(t)>0;return'<button class="time-btn'+(t===chosenTime?' sel':'')+(best?' has-score':'')+'" data-v="'+t+'"><span class="tb-val">'+fmtTime(t)+'</span><span class="tb-dot"></span></button>';}).join('');
+  document.getElementById('home-content').innerHTML=
+    '<div class="logo-wrap"><div class="logo-title">TAP FRENZY+</div><div class="logo-sub">React &middot; Build &middot; Dominate</div></div>'+
+    buildRespectCard()+buildTargetCard(chosenTime)+
+    '<div class="section-label">Duration</div>'+
+    '<div class="time-grid" id="time-grid">'+timeButtons+'</div>'+
+    '<div class="audio-row"><button class="audio-btn'+(musicOn?' active':'')+'" id="music-btn"><span class="dot"></span>Music</button><button class="audio-btn'+(sfxOn?' active':'')+'" id="sfx-btn"><span class="dot"></span>SFX</button><div class="vol-wrap"><span class="vol-label">Vol</span><input type="range" id="vol-sl" min="0" max="100" value="60"></div></div>'+
+    (todayBest>0?'<div style="font-size:11px;font-weight:700;color:var(--text3);text-align:center;">Today\'s best ('+fmtTime(chosenTime)+'): <span style="color:var(--green);">'+todayBest.toLocaleString()+'</span></div>':'')+
+    '<button class="play-btn" id="play-btn"><div class="play-btn-pulse"></div>PLAY</button>'+
+    buildScoreboardCard(chosenTime);
+
+  wireHomeControls();wireSbTabs();
+}
+
+function wireHomeControls(){
+  var grid=document.getElementById('time-grid');
+  if(grid)grid.querySelectorAll('.time-btn').forEach(function(b){b.addEventListener('click',function(){grid.querySelectorAll('.time-btn').forEach(function(x){x.classList.remove('sel');});b.classList.add('sel');chosenTime=parseInt(b.dataset.v);sbViewTime=chosenTime;buildHomeScreen();});});
+  var mb=document.getElementById('music-btn');if(mb)mb.addEventListener('click',function(){musicOn=!musicOn;this.classList.toggle('active',musicOn);});
+  var sb=document.getElementById('sfx-btn');if(sb)sb.addEventListener('click',function(){sfxOn=!sfxOn;this.classList.toggle('active',sfxOn);});
+  var vs=document.getElementById('vol-sl');if(vs)vs.addEventListener('input',function(){masterVol=parseInt(this.value)/100;if(bgGain)bgGain.gain.value=0.15*masterVol;if(urgentGain)urgentGain.gain.value=0.2*masterVol;});
+  var pb=document.getElementById('play-btn');if(pb)pb.addEventListener('click',function(){getCtx();startPreCountdown();});
+}
+function wireSbTabs(){var tabs=document.getElementById('sb-tabs');if(!tabs)return;tabs.querySelectorAll('.sb-tab').forEach(function(b){b.addEventListener('click',function(){sbViewTime=parseInt(b.getAttribute('data-t'));tabs.querySelectorAll('.sb-tab').forEach(function(x){x.classList.remove('active');});b.classList.add('active');var rows=document.getElementById('sb-rows');if(rows)rows.innerHTML=buildSbRows(sbViewTime);});});}
+
+/* ══ PRE-GAME COUNTDOWN ══ */
+function startPreCountdown(){
+  showScreen('game-screen');
+  var el=document.getElementById('pre-game-countdown');
+  el.style.display='flex';el.innerHTML='';
+  var n=3,seq=['3','2','1','GO!'];
+  function tick(){if(n<0){el.style.display='none';startGame();return;}el.innerHTML='<div class="pgc-num">'+seq[3-n]+'</div>';playCountdownBeep(n);vibrate(n===0?50:20);n--;setTimeout(tick,800);}
+  tick();
+}
+
+/* ══ GAME ══ */
+var arena=document.getElementById('arena');
+function tgtSize(){var vw=window.innerWidth,s=vw<400?54:46,m=vw<400?68:58,b=vw<400?82:70,r=Math.random();return r<0.2?s:r<0.5?m:b;}
+
+function spawnTarget(){
+  if(!running)return;
+  var size=tgtSize(),pad=size/2+8,W=arena.offsetWidth,H=arena.offsetHeight;
+  var x=pad+Math.random()*(W-pad*2),y=pad+Math.random()*(H-pad*2);
+  var bg=COLORS[Math.floor(Math.random()*COLORS.length)];
+  var lifeBase=frozen?2800:Math.max(800,1400-level*50),life=lifeBase+Math.random()*500;
+  var pts=size<56?30:size<65?20:10;
+  var el=document.createElement('div');el.className='tgt';
+  el.style.cssText='width:'+size+'px;height:'+size+'px;left:'+(x-size/2)+'px;top:'+(y-size/2)+'px;background:linear-gradient(135deg,'+bg+','+bg+'bb);color:#fff;font-size:'+Math.round(size*0.38)+'px;box-shadow:0 4px 16px '+bg+'55,0 0 0 1px rgba(255,255,255,0.08) inset;';
+  el.textContent=SHAPES[Math.floor(Math.random()*SHAPES.length)];
+  var ring=document.createElement('div');ring.style.cssText='position:absolute;inset:-3px;border-radius:50%;border:2.5px solid '+bg+';animation:tgtRingAnim '+life+'ms linear forwards;pointer-events:none;';
+  el.appendChild(ring);
+  var timer=setTimeout(function(){if(el.parentNode){el.remove();onMiss();}},life);
+  function doHit(e){e.preventDefault();e.stopPropagation();if(el.classList.contains('gone'))return;clearTimeout(timer);el.classList.add('gone');setTimeout(function(){if(el.parentNode)el.remove();},120);onHit(pts,x,y,bg);}
+  el.addEventListener('click',doHit);el.addEventListener('touchend',doHit,{passive:false});
+  arena.appendChild(el);targets.push({el:el,timer:timer});
+}
+function spawnPowerup(){
+  if(!running||Math.random()>0.35)return;
+  var types=[{id:'freeze',label:'\u2744\ufe0f',bg:'#0ea5e9',desc:'Freeze +4s',glow:'rgba(14,165,233,0.4)'},{id:'double',label:'\u26a1',bg:'#f59e0b',desc:'2x Points 5s',glow:'rgba(245,158,11,0.4)'},{id:'clear',label:'\u2604\ufe0f',bg:'#8b5cf6',desc:'Field cleared!',glow:'rgba(139,92,246,0.4)'},{id:'bomb',label:'\ud83d\udca3',bg:'#ef4444',desc:'BOMB! -combo',glow:'rgba(239,68,68,0.4)'}];
+  var t=types[Math.floor(Math.random()*types.length)];
+  var vw=window.innerWidth,size=vw<400?64:58,pad=size/2+10,W=arena.offsetWidth,H=arena.offsetHeight;
+  var x=pad+Math.random()*(W-pad*2),y=pad+Math.random()*(H-pad*2);
+  var el=document.createElement('div');el.className='pwup';
+  el.style.cssText='width:'+size+'px;height:'+size+'px;left:'+(x-size/2)+'px;top:'+(y-size/2)+'px;background:linear-gradient(135deg,'+t.bg+','+t.bg+'bb);font-size:'+Math.round(size*0.42)+'px;box-shadow:0 6px 24px '+t.glow+';';
+  el.textContent=t.label;
+  var timer=setTimeout(function(){if(el.parentNode)el.remove();},4000);
+  function doPw(e){e.preventDefault();e.stopPropagation();clearTimeout(timer);el.remove();activatePowerup(t,x,y);}
+  el.addEventListener('click',doPw);el.addEventListener('touchend',doPw,{passive:false});
+  arena.appendChild(el);pwups.push({el:el,timer:timer});
+}
+function activatePowerup(t,x,y){
+  playPowerup(t.id);showBadge(t.desc);vibrate([30,10,30]);spawnHitParticles(x,y,t.bg);
+  if(t.id==='freeze'){frozen=true;document.getElementById('freeze-ov').style.opacity='1';setTimeout(function(){frozen=false;document.getElementById('freeze-ov').style.opacity='0';},4000);}
+  else if(t.id==='double'){doublePoints=true;document.getElementById('double-ov').style.opacity='1';setTimeout(function(){doublePoints=false;document.getElementById('double-ov').style.opacity='0';},5000);}
+  else if(t.id==='clear'){targets.slice().forEach(function(t){clearTimeout(t.timer);t.el.classList.add('gone');setTimeout(function(){if(t.el.parentNode)t.el.remove();},120);});targets=[];score+=combo*20;updateHUD();}
+  else if(t.id==='bomb'){combo=1;updateHUDCombo();document.getElementById('miss-flash').style.opacity='1';setTimeout(function(){document.getElementById('miss-flash').style.opacity='0';},400);vibrate([100,50,100]);}
+}
+function onHit(basePts,x,y,color){
+  hitCount++;combo=Math.min(combo+1,16);if(combo>bestCombo)bestCombo=combo;
+  var pts=basePts*combo*(doublePoints?2:1);score+=pts;xp++;
+  vibrate(10);spawnHitParticles(x,y,color||'#7c3aed');playHit(combo);
+  if(xp>=xpNeeded){xp=0;xpNeeded=Math.round(xpNeeded*1.5);level++;playLevelUp();showBadge('\u2b06 Level '+level+'!');}
+  updateHUD();showFloaty('+'+pts,x,y,doublePoints?'#f59e0b':'#10b981');updateComboDisplay();
+  if(combo===5){showBadge('\ud83d\udd25 On Fire!');playComboMilestone(5);}
+  if(combo===10){showBadge('\u26a1 Unstoppable!');playComboMilestone(10);}
+  if(combo===16){showBadge('\ud83d\ude80 GODLIKE!');playComboMilestone(16);}
+}
+function onMiss(){
+  missCount++;combo=1;vibrate([20,10,20]);playMiss();updateHUDCombo();updateComboDisplay();
+  document.getElementById('miss-flash').style.opacity='1';setTimeout(function(){document.getElementById('miss-flash').style.opacity='0';},100);
+}
+function updateComboDisplay(){var d=document.getElementById('combo-display');if(!d)return;if(combo>=3){d.textContent='x'+combo;d.style.color=combo>=10?'#ef4444':combo>=6?'#f59e0b':'#06b6d4';d.classList.add('show');clearTimeout(comboTimer);comboTimer=setTimeout(function(){d.classList.remove('show');},1200);}else{d.classList.remove('show');}}
+function updateHUD(){document.getElementById('h-score').textContent=score.toLocaleString();updateHUDCombo();document.getElementById('h-level').textContent=level;document.getElementById('xp-bar').style.width=Math.round(xp/xpNeeded*100)+'%';}
+function updateHUDCombo(){var el=document.getElementById('h-combo');el.textContent='x'+combo;el.style.color=combo>=10?'#ef4444':combo>=6?'#f59e0b':combo>=3?'#06b6d4':'#06b6d4';}
+function showFloaty(txt,x,y,color){var f=document.createElement('div');f.className='floaty';f.style.cssText='left:'+x+'px;top:'+y+'px;color:'+color+';font-size:clamp(13px,3.5vw,16px);';f.textContent=txt;arena.appendChild(f);setTimeout(function(){f.remove();},750);}
+function showBadge(txt){var b=document.createElement('div');b.className='badge-pop';b.textContent=txt;arena.appendChild(b);setTimeout(function(){b.remove();},1000);}
+function getSpawnRate(){var pct=timeLeft/chosenTime,base=pct>0.66?900:pct>0.33?650:420;return Math.max(280,base-level*15);}
+function scheduleSpawn(){if(!running)return;spawnTarget();if(Math.random()<0.15+level*0.02)spawnTarget();spawnTout=setTimeout(scheduleSpawn,getSpawnRate());}
+function schedulePw(){if(!running)return;if(Math.random()<0.4)spawnPowerup();setTimeout(schedulePw,4500+Math.random()*3500);}
+function clearArena(){targets.forEach(function(t){clearTimeout(t.timer);if(t.el.parentNode)t.el.remove();});pwups.forEach(function(p){clearTimeout(p.timer);if(p.el.parentNode)p.el.remove();});targets=[];pwups=[];arena.querySelectorAll('.floaty,.badge-pop').forEach(function(e){e.remove();});}
+
+function startGame(){
+  score=0;combo=1;bestCombo=1;timeLeft=chosenTime;running=true;frozen=false;doublePoints=false;urgentStarted=false;
+  level=1;xp=0;xpNeeded=10;hitCount=0;missCount=0;arenaParticles=[];
+  document.getElementById('h-score').textContent='0';document.getElementById('h-combo').textContent='x1';document.getElementById('h-combo').style.color='#06b6d4';
+  document.getElementById('h-level').textContent='1';document.getElementById('h-time').textContent=timeLeft;document.getElementById('h-time').style.color='var(--text)';
+  document.getElementById('xp-bar').style.width='0%';document.getElementById('freeze-ov').style.opacity='0';document.getElementById('double-ov').style.opacity='0';
+  document.getElementById('urgent-bar').style.display='none';document.getElementById('game-stats-bar').style.display='none';document.getElementById('combo-display').classList.remove('show');
+  clearArena();animateArena();stopAllMusic();startBgMusic();scheduleSpawn();schedulePw();
+  cdInt=setInterval(function(){
+    if(frozen)return;
+    timeLeft--;var tEl=document.getElementById('h-time');tEl.textContent=timeLeft;
+    if(timeLeft<=10){tEl.style.color='#ef4444';document.getElementById('urgent-bar').style.display='block';playCountdownBeep(timeLeft%2===0?1:2);if(!urgentStarted){urgentStarted=true;stopBgMusic();startUrgentMusic();}}
+    if(timeLeft<=0)endGame();
+  },1000);
+}
+
+function endGame(){
+  running=false;clearTimeout(spawnTout);clearInterval(cdInt);clearArena();stopAllMusic();
+  saveScore(chosenTime,score);updateStreak();
+  var target=getTarget(chosenTime),beatTarget=target>0&&score>=target;
+  var motivMsg=beatTarget?randMsg(MOT_WIN):randMsg(MOT_MISS);
+  var total=hitCount+missCount,acc=total>0?Math.round(hitCount/total*100):0;
+  document.getElementById('st-hits').textContent=hitCount;document.getElementById('st-miss').textContent=missCount;
+  document.getElementById('st-acc').textContent=acc+'%';document.getElementById('st-bc').textContent='x'+bestCombo;
+  document.getElementById('game-stats-bar').style.display='flex';
+  buildResultsScreen(beatTarget,motivMsg,target,acc);
+  setTimeout(function(){showScreen('results-screen');},300);
+  if(beatTarget){setTimeout(function(){launchConfetti();playCelebration();showCeleb('\ud83c\udf89','TARGET CRUSHED!',motivMsg);},500);}
+  else{setTimeout(function(){playGameOver();},300);}
+}
+
+function buildResultsScreen(beatTarget,motivMsg,target,acc){
+  document.getElementById('results-content').innerHTML=
+    '<div class="result-title">'+(beatTarget?'\ud83c\udf89 TARGET CRUSHED!':"Time's Up!")+'</div>'+
+    '<div class="result-score">'+score.toLocaleString()+'</div>'+
+    '<div class="result-mode">'+fmtTime(chosenTime).toUpperCase()+' MODE &bull; LEVEL '+level+'</div>'+
+    (target>0?'<div class="target-result"><div class="tr-left"><div class="tr-lbl">Target</div><div class="tr-val">'+target.toLocaleString()+'</div></div><div class="tr-badge '+(beatTarget?'win':'fail')+'">'+(beatTarget?'\u2713 Beaten!':'\u2715 Not yet')+'</div></div>':'')+
+    '<div class="motiv-card">'+motivMsg+'</div>'+
+    '<div class="stats-grid"><div class="stat-card"><div class="stat-label">Best Combo</div><div class="stat-val" style="color:#06b6d4;">x'+bestCombo+'</div></div><div class="stat-card"><div class="stat-label">Accuracy</div><div class="stat-val" style="color:#10b981;">'+acc+'%</div></div><div class="stat-card"><div class="stat-label">Hits</div><div class="stat-val">'+hitCount+'</div></div><div class="stat-card"><div class="stat-label">Misses</div><div class="stat-val" style="color:#ef4444;">'+missCount+'</div></div></div>'+
+    buildRespectCard()+
+    buildScoreboardCard(chosenTime)+
+    '<div style="width:100%;text-align:center;"><div class="ad-label" style="font-size:9px;color:var(--text3);margin-bottom:3px;">Advertisement</div><ins class="adsbygoogle" style="display:block;width:100%;height:50px;" data-ad-client="ca-pub-3098959460651041" data-ad-slot="auto" data-ad-format="banner" data-full-width-responsive="true"></ins></div>'+
+    '<button class="play-again-btn" id="play-again-btn">PLAY AGAIN</button>'+
+    '<button class="home-btn" onclick="goHome()">&#8592; Home</button>';
+
+  try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+  var pab=document.getElementById('play-again-btn');if(pab)pab.addEventListener('click',function(){getCtx();startPreCountdown();});
+  wireSbTabs();
+}
+
+function goHome(){showScreen('home-screen');buildHomeScreen();}
+
+/* RING ANIMATION (added via styleSheet) */
+var style=document.createElement('style');
+style.textContent='@keyframes tgtRingAnim{from{transform:scale(1.6);opacity:0.5}to{transform:scale(1);opacity:0}}';
+document.head.appendChild(style);
+
+/* ARENA MISS */
+arena.addEventListener('click',function(e){if(!running)return;var ids=['arena','miss-flash','freeze-ov','double-ov','arena-canvas','combo-display'];if(ids.indexOf(e.target.id)>-1||e.target===arena)onMiss();});
+arena.addEventListener('touchend',function(e){if(!running)return;var ids=['arena','miss-flash','freeze-ov','double-ov','arena-canvas','combo-display'];if(ids.indexOf(e.target.id)>-1||e.target===arena){e.preventDefault();onMiss();}},{passive:false});
+
+/* INIT */
+buildHomeScreen();
+initBgCanvas();
+</script>
+</body>
+</html>
